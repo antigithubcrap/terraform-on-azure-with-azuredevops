@@ -7,9 +7,10 @@ rm terraform.zip
 wget https://vstsagentpackage.azureedge.net/agent/2.175.2/vsts-agent-linux-x64-2.175.2.tar.gz -O vstsagent.tar.gz
 mkdir vstsagent
 mv vstsagent.tar.gz vstsagent
+mkdir vsts & mkdir vsts/work
 cd vstsagent
 tar -zxvf vstsagent.tar.gz
 rm vstsagent.tar.gz
-./config.sh --unattended --url <url> --auth pat --token <token> --pool 'Terraform' --agent 'Terraform 01' --replace --work /home/vsts/work --acceptTeeEula
+./config.sh --unattended --url <URL del inquilino Azure DevOps> --auth pat --token <PAT de Azure DevOps> --pool 'Terraform' --agent 'Terraform 01' --replace --work /home/vsts/work --acceptTeeEula
 sudo ./svc.sh install
 sudo ./svc.sh start
