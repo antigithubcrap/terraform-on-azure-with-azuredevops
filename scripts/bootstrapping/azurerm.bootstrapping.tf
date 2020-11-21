@@ -9,6 +9,13 @@ provider "azurerm" {
     features { }
 }
 
+data "azurerm_subscription" "terraform-subscription-01" { }
+
+data "azurerm_role_definition" "terraform-roledefinition-01" {
+
+    name = "Owner"
+}
+
 data "template_file" "template-file-01" {
 
     template = file("terraform-01-custom-data.sh")
@@ -93,6 +100,8 @@ resource "azurerm_linux_virtual_machine" "terraform-linuxvirtualmachine-01" {
     admin_password                  = var.linux-virtual-machine-01-admin-password
     disable_password_authentication = false
     custom_data                     = base64encode(data.template_file.template-file-01.rendered)
+    encryption_at_host_enabled      = false
+    computer_name                   = "terraform-01-${random_id.terraform-randomid-01.hex}"
     
     identity {
         type = "SystemAssigned"
@@ -121,6 +130,22 @@ resource "azurerm_linux_virtual_machine" "terraform-linuxvirtualmachine-01" {
 
         CONTEXT = "TERRAFORM"
     }
+
+    lifecycle {
+
+        ignore_changes = [
+
+            identity,
+            custom_data
+        ]
+    }
+}
+
+resource "azurerm_role_assignment" "terraform-roleassignment-01" {
+
+    scope              = data.azurerm_subscription.terraform-subscription-01.id
+    role_definition_id = "${data.azurerm_subscription.terraform-subscription-01.id}${data.azurerm_role_definition.terraform-roledefinition-01.id}"
+    principal_id       = azurerm_linux_virtual_machine.terraform-linuxvirtualmachine-01.identity[0].principal_id
 }
 
 resource "azurerm_public_ip" "terraform-publicip-01" {
