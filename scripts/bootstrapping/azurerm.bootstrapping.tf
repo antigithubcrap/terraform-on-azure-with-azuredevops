@@ -95,7 +95,7 @@ resource "azurerm_linux_virtual_machine" "terraform-linuxvirtualmachine-01" {
     name                            = "terraform-01-${random_id.terraform-randomid-01.hex}"
     resource_group_name             = azurerm_resource_group.terraform-resourcegroup-01.name
     location                        = azurerm_resource_group.terraform-resourcegroup-01.location
-    size                            = "Standard_B1ls"
+    size                            = "Standard_B1s"
     admin_username                  = var.linux-virtual-machine-01-admin-username
     admin_password                  = var.linux-virtual-machine-01-admin-password
     disable_password_authentication = false
